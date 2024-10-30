@@ -26,15 +26,21 @@ Flutter Finance is a mobile application built with Flutter that helps users trac
    git clone https://github.com/yourusername/flutter-finance.
    ```
 
-2. Navigate to the project directory:
+2. **Navigate to the project directory:**
 
+   ```
    cd flutter-finance
 
-3. Install dependencies:
+   ```
 
+3. **Install dependencies:**
+
+   ```
    flutter pub get
 
-4. Set up Firebase:
+   ```
+
+4. **Set up Firebase:**
 
 - Create a new project in Firebase Console.
 - Enable Authentication and Firestore Database.
