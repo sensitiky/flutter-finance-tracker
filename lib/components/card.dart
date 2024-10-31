@@ -16,7 +16,6 @@ class _CardComponentState extends State<CardComponent> {
   final expiryDateController = TextEditingController();
   final cardHolderController = TextEditingController();
   final cvvController = TextEditingController();
-
   @override
   void initState() {
     super.initState();
@@ -33,6 +32,12 @@ class _CardComponentState extends State<CardComponent> {
     final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
 
     Future<void> editCard() async {
+      if (cvvController.text.length != 3) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("CVV must be 3 digits")),
+        );
+        return;
+      }
       try {
         bool success = await cardViewModel.saveCardOrUpdateCard(
           uid,
