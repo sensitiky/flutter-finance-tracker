@@ -1,4 +1,5 @@
 import 'package:expense_tracker/components/card.dart';
+import 'package:expense_tracker/modelview/themeviewmodel.dart';
 import 'package:expense_tracker/modelview/userviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -9,19 +10,21 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserViewModel>(
-      builder: (context, userViewModel, child) {
+    return Consumer2<UserViewModel, Themeviewmodel>(
+      builder: (context, userViewModel, themeViewModel, child) {
         return Scaffold(
-          backgroundColor: Colors.grey[100],
+          backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: Text(
               'Welcome Back ${userViewModel.name}',
             ),
+            centerTitle: true,
             actions: [
               IconButton(
-                icon: const CircleAvatar(
+                icon: CircleAvatar(
                   radius: 15,
-                  backgroundColor: Colors.white,
+                  backgroundColor:
+                      Theme.of(context).colorScheme.primaryContainer,
                   child: Icon(Icons.person_outline, size: 20),
                 ),
                 onPressed: goToSettings,
@@ -42,14 +45,19 @@ class HomeScreen extends StatelessWidget {
                       Text(
                         'Total Balance',
                         style: TextStyle(
-                          color: Colors.grey[600],
+                          color: themeViewModel.isDarkMode
+                              ? Colors.grey
+                              : Colors.black54,
                           fontSize: 16,
                         ),
                       ),
                       const SizedBox(height: 8),
-                      const Text(
+                      Text(
                         '\$12,846.00',
                         style: TextStyle(
+                          color: themeViewModel.isDarkMode
+                              ? Colors.white
+                              : Colors.black,
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
@@ -157,25 +165,29 @@ class HomeScreen extends StatelessWidget {
     required String label,
     required Color color,
   }) {
-    return Column(
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Icon(icon, color: color, size: 24),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey[700],
-            fontSize: 12,
-          ),
-        ),
-      ],
+    return Consumer<Themeviewmodel>(
+      builder: (context, themeViewModel, child) {
+        return Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(icon, color: color, size: 24),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                color: themeViewModel.isDarkMode ? Colors.white : Colors.black,
+                fontSize: 12,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -187,74 +199,85 @@ class HomeScreen extends StatelessWidget {
     required String date,
     bool isIncome = false,
   }) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 15),
-      padding: const EdgeInsets.all(15),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: Colors.grey[700]),
-          ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  subtitle,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 14,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Text(
-                '${isIncome ? '+' : '-'}\$${amount.abs().toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                  color: isIncome ? Colors.green : Colors.red,
-                ),
-              ),
-              Text(
-                date,
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
-                ),
+    return Consumer<Themeviewmodel>(
+      builder: (context, themeViewModel, child) {
+        return Container(
+          margin: const EdgeInsets.only(bottom: 15),
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: themeViewModel.isDarkMode ? Colors.white10 : Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.1),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
               ),
             ],
           ),
-        ],
-      ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.grey[100],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(icon, color: Colors.grey[700]),
+              ),
+              const SizedBox(width: 15),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        color: themeViewModel.isDarkMode
+                            ? Colors.white
+                            : Colors.black,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        color: themeViewModel.isDarkMode
+                            ? Colors.white70
+                            : Colors.grey,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    '${isIncome ? '+' : '-'}\$${amount.abs().toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
+                      color: isIncome ? Colors.green : Colors.red,
+                    ),
+                  ),
+                  Text(
+                    date,
+                    style: TextStyle(
+                      color: themeViewModel.isDarkMode
+                          ? Colors.white
+                          : Colors.black,
+                      fontSize: 14,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

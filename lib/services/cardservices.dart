@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expense_tracker/model/creditcard.dart';
 
-//TODO Poder editar valores de las tarjetas para poder almacenarlas sino ahora todo el tiempo es null
+/*TODO
+Recorrer las tarjetas del usuario si tiene más de una, máximo de 5 por persona??
+Poder editar las tarjetas, verificar tarjetas con un pago minimo de $0.1
+*/
 class CardServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
