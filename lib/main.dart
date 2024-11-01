@@ -8,7 +8,8 @@ import 'package:expense_tracker/view/dashboard.dart';
 import 'package:expense_tracker/view/home.dart';
 import 'package:expense_tracker/view/login.dart';
 import 'package:expense_tracker/view/register.dart';
-import 'package:expense_tracker/view/settings.dart';
+import 'package:expense_tracker/view/settings/profile.dart';
+import 'package:expense_tracker/view/settings/settings.dart';
 import 'package:expense_tracker/view/welcome.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,7 @@ class MainApp extends StatelessWidget {
               "/Login": (context) => const LoginForm(),
               "/Register": (context) => const RegisterForm(),
               "/Settings": (context) => SettingsScreen(),
+              "/Profile": (context) => ProfileScreen()
             },
           );
         }));

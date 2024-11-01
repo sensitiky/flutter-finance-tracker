@@ -116,7 +116,9 @@ class SettingsScreen extends StatelessWidget {
                       titleColor: themeViewModel.isDarkMode
                           ? Colors.white
                           : Colors.grey[700],
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, "/Profile");
+                      },
                     ),
                     _buildSettingsItem(
                       icon: Icons.security,
