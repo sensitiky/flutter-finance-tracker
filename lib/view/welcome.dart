@@ -1,5 +1,5 @@
-import 'package:expense_tracker/view/login.dart';
-import 'package:expense_tracker/view/register.dart';
+import 'package:fundora/view/login.dart';
+import 'package:fundora/view/register.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatelessWidget {

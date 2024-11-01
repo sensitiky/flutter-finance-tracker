@@ -1,8 +1,8 @@
-import 'package:expense_tracker/components/card.dart';
+import 'package:fundora/components/card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:expense_tracker/modelview/userviewmodel.dart';
+import 'package:fundora/modelview/userviewmodel.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -232,7 +232,7 @@ class SpendingTrends extends StatelessWidget {
                         FlSpot(5, 1500),
                       ],
                       isCurved: true,
-                      color: const Color.fromARGB(255, 46, 24, 238),
+                      color: Colors.purple.shade300,
                       barWidth: 3,
                       dotData: const FlDotData(show: false),
                       belowBarData: BarAreaData(

@@ -1,4 +1,4 @@
-import 'package:expense_tracker/model/creditcard.dart';
+import 'package:fundora/model/creditcard.dart';
 
 class User {
   final String id;

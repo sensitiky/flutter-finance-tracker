@@ -1,10 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:expense_tracker/model/creditcard.dart';
+import 'package:fundora/model/creditcard.dart';
 
-/*TODO
-Recorrer las tarjetas del usuario si tiene más de una, máximo de 5 por persona??
-Poder editar las tarjetas, verificar tarjetas con un pago minimo de $0.1
-*/
 class CardServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -39,6 +35,45 @@ class CardServices {
       return true;
     } catch (error) {
       throw Exception("Failed to save user data: $error");
+    }
+  }
+
+  Future<bool> updateCreditCard(
+      String uid, index, Map<String, dynamic> cardData) async {
+    try {
+      var userDocs = await _firestore.collection("users").doc(uid).get();
+      if (userDocs.exists) {
+        Map<String, dynamic> data = userDocs.data() as Map<String, dynamic>;
+        List<dynamic> creditCardsData = data["creditCards"] ?? [];
+        if (index >= 0 && index < creditCardsData.length) {
+          creditCardsData[index] = cardData;
+          await _firestore
+              .collection("users")
+              .doc(uid)
+              .update({"creditCards": creditCardsData});
+        }
+      }
+      return true;
+    } catch (error) {
+      throw Exception("Failed to update credit card $error");
+    }
+  }
+
+  Future<bool> removeCreditCard(String uid, index) async {
+    try {
+      var userDocs = await _firestore.collection("users").doc(uid).get();
+      if (userDocs.exists) {
+        Map<String, dynamic> data = userDocs.data() as Map<String, dynamic>;
+        List<dynamic> creditCardsData = data["creditCards"] ?? [];
+        creditCardsData.removeAt(index);
+        await _firestore
+            .collection("users")
+            .doc(uid)
+            .update({"creditCards": creditCardsData});
+      }
+      return true;
+    } catch (error) {
+      throw Exception("Failed to remove credit card $error");
     }
   }
 }

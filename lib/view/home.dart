@@ -1,12 +1,226 @@
-import 'package:expense_tracker/components/card.dart';
-import 'package:expense_tracker/modelview/themeviewmodel.dart';
-import 'package:expense_tracker/modelview/userviewmodel.dart';
+import 'package:fundora/components/card.dart';
+import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/modelview/userviewmodel.dart';
+import 'package:fundora/modelview/cardviewmodel.dart';
+import 'package:fundora/model/creditcard.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final VoidCallback goToSettings;
   const HomeScreen({super.key, required this.goToSettings});
+
+  @override
+  HomeScreenState createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+  final cardNumberController = TextEditingController();
+  final expiryDateController = TextEditingController();
+  final cardHolderController = TextEditingController();
+  final cvvController = TextEditingController();
+  bool isEditing = false;
+  int? editIndex;
+
+  @override
+  void dispose() {
+    cardNumberController.dispose();
+    expiryDateController.dispose();
+    cardHolderController.dispose();
+    cvvController.dispose();
+    super.dispose();
+  }
+
+  void clearControllers() {
+    cardNumberController.clear();
+    expiryDateController.clear();
+    cardHolderController.clear();
+    cvvController.clear();
+  }
+
+  Future<void> saveCard(BuildContext context) async {
+    if (cvvController.text.length != 3) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("CVV must be 3 digits")),
+      );
+      return;
+    }
+
+    try {
+      final cardViewModel =
+          Provider.of<CreditCardViewModel>(context, listen: false);
+      bool success;
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+
+      if (isEditing && editIndex != null) {
+        // Update existing card
+        success = await cardViewModel.updateCard(
+          uid: uid,
+          index: editIndex!,
+          cardNumber: cardNumberController.text,
+          expiryDate: expiryDateController.text,
+          cardHolder: cardHolderController.text,
+          cvv: cvvController.text,
+        );
+      } else {
+        // Save new card
+        success = await cardViewModel.saveCreditCard(
+          uid: uid,
+          cardNumber: cardNumberController.text,
+          expiryDate: expiryDateController.text,
+          cardHolder: cardHolderController.text,
+          cvv: cvvController.text,
+        );
+      }
+
+      if (success) {
+        clearControllers();
+        isEditing = false;
+        editIndex = null;
+        if (context.mounted) Navigator.of(context).pop();
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Failed to save card")),
+          );
+        }
+      }
+    } catch (error) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error saving card: $error")),
+        );
+      }
+    }
+  }
+
+  Future<void> addCard(BuildContext context) async {
+    clearControllers();
+    isEditing = false;
+    editIndex = null;
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Add Credit Card'),
+          content: SingleChildScrollView(
+            child: Column(
+              children: [
+                TextField(
+                  controller: cardNumberController,
+                  decoration: const InputDecoration(labelText: "Card Number"),
+                  keyboardType: TextInputType.number,
+                ),
+                TextField(
+                  controller: expiryDateController,
+                  decoration: const InputDecoration(labelText: "Expiry Date"),
+                  keyboardType: TextInputType.datetime,
+                ),
+                TextField(
+                  controller: cardHolderController,
+                  decoration: const InputDecoration(labelText: "Card Holder"),
+                ),
+                TextField(
+                  controller: cvvController,
+                  decoration: const InputDecoration(labelText: "CVV"),
+                  keyboardType: TextInputType.number,
+                  obscureText: true,
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                clearControllers();
+                Navigator.of(context).pop();
+              },
+              child: const Text("Cancel"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                await saveCard(context);
+              },
+              child: const Text("Save"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> editCard(BuildContext context) async {
+    final cardViewModel =
+        Provider.of<CreditCardViewModel>(context, listen: false);
+    if (cardViewModel.cardModel.isNotEmpty) {
+      int index = 0;
+      CreditCard card = cardViewModel.cardModel[index];
+      cardNumberController.text = card.cardNumber ?? "";
+      expiryDateController.text = card.expiryDate ?? "";
+      cardHolderController.text = card.cardHolder ?? "";
+      cvvController.text = card.cvv ?? "";
+      isEditing = true;
+      editIndex = index;
+
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Edit Credit Card'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                    controller: cardNumberController,
+                    decoration: const InputDecoration(labelText: "Card Number"),
+                    keyboardType: TextInputType.number,
+                  ),
+                  TextField(
+                    controller: expiryDateController,
+                    decoration: const InputDecoration(labelText: "Expiry Date"),
+                    keyboardType: TextInputType.datetime,
+                  ),
+                  TextField(
+                    controller: cardHolderController,
+                    decoration: const InputDecoration(labelText: "Card Holder"),
+                  ),
+                  TextField(
+                    controller: cvvController,
+                    decoration: const InputDecoration(labelText: "CVV"),
+                    keyboardType: TextInputType.number,
+                    obscureText: true,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  clearControllers();
+                  isEditing = false;
+                  editIndex = null;
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Cancel"),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  await saveCard(context);
+                },
+                child: const Text("Save"),
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No credit cards to edit.")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,8 +230,9 @@ class HomeScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             title: Text(
-              'Welcome Back ${userViewModel.name}',
+              'Welcome ${userViewModel.name}',
             ),
+            automaticallyImplyLeading: false,
             centerTitle: true,
             actions: [
               IconButton(
@@ -25,9 +240,16 @@ class HomeScreen extends StatelessWidget {
                   radius: 15,
                   backgroundColor:
                       Theme.of(context).colorScheme.primaryContainer,
-                  child: Icon(Icons.person_outline, size: 20),
+                  child: ClipOval(
+                    child: Image.network(
+                      'https://i.pravatar.cc/300',
+                      fit: BoxFit.cover,
+                      width: 30,
+                      height: 30,
+                    ),
+                  ),
                 ),
-                onPressed: goToSettings,
+                onPressed: widget.goToSettings,
               ),
               const SizedBox(width: 10),
             ],
@@ -65,11 +287,43 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-
                 // Credit Card
                 const CardComponent(),
                 const SizedBox(height: 20),
-
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: Row(
+                        children: [
+                          const Text("Edit"),
+                          IconButton(
+                            onPressed: () async {
+                              await editCard(context);
+                            },
+                            icon: const Icon(Icons.edit),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 30),
+                      child: Row(
+                        children: [
+                          const Text("Add"),
+                          IconButton(
+                            onPressed: () async {
+                              await addCard(context);
+                            },
+                            icon: const Icon(Icons.add),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
                 // Quick Actions
                 Padding(
                   padding: const EdgeInsets.all(20),
