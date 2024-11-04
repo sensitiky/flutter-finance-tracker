@@ -6,6 +6,69 @@ import 'package:provider/provider.dart';
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
 
+  Future<bool?> showLogoutBottomSheet(BuildContext context) {
+    return showModalBottomSheet<bool>(
+      context: context,
+      isScrollControlled: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(20),
+        ),
+      ),
+      builder: (context) {
+        return SizedBox(
+          height: MediaQuery.of(context).size.height * 0.25,
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Container(
+                width: 40,
+                height: 4,
+                decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.circular(2),
+                ),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                'Are you sure you want to logout?',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const Spacer(),
+              Divider(height: 1),
+              ListTile(
+                title: Center(
+                  child: Text(
+                    'Logout',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+              Divider(height: 1),
+              ListTile(
+                title: Center(
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<UserViewModel, Themeviewmodel>(
@@ -205,7 +268,18 @@ class SettingsScreen extends StatelessWidget {
                       title: 'Logout',
                       titleColor: Colors.red,
                       onTap: () async {
-                        await userViewModel.logout();
+                        bool? shouldLogout =
+                            await showLogoutBottomSheet(context);
+                        if (shouldLogout == true) {
+                          await userViewModel.logout();
+                          if (context.mounted) {
+                            Navigator.pushNamedAndRemoveUntil(
+                              context,
+                              "/Login",
+                              (route) => false,
+                            );
+                          }
+                        }
                       },
                     ),
                   ],

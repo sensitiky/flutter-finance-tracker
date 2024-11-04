@@ -94,13 +94,49 @@ class UserViewModel extends ChangeNotifier {
     return null;
   }
 
+  Future<void> updateUser(Map<String, dynamic> newUserData) async {
+    _isLoading = true;
+    notifyListeners();
+    try {
+      await _userService.updateUserData(_userModel!.id, newUserData);
+      _userModel = User(
+        id: _userModel!.id,
+        name: newUserData['name'] ?? _userModel!.name,
+        email: newUserData['email'] ?? _userModel!.email,
+      );
+      _logger.info("User updated: ${_userModel!.toJson()}");
+      notifyListeners();
+    } catch (error) {
+      _logger.severe("Error updating user data: $error");
+      throw Exception("Error updating user data: $error");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _userService.updatePassword(newPassword);
+      _logger.info("Password updated successfully");
+    } catch (error) {
+      _logger.severe("Error updating password: $error");
+      throw Exception("Error updating password: $error");
+    }
+  }
+
   Future<void> logout() async {
+    _isLoading = true;
+    notifyListeners();
     try {
       await _userService.signOut();
       _userModel = null;
       notifyListeners();
     } catch (e) {
       _logger.severe("Logout error: $e");
+    } finally {
+      _isLoading = false;
+      notifyListeners();
     }
   }
 }

@@ -125,4 +125,30 @@ class Userservices {
       throw Exception("Failed to get user data: $error");
     }
   }
+
+  Future<void> updateUserData(
+      String uid, Map<String, dynamic> newUserData) async {
+    try {
+      await _firestore.collection("users").doc(uid).update(newUserData);
+      _logger.info("User data updated for UID: $uid");
+      // Update email in FirebaseAuth if it has changed
+      if (newUserData.containsKey('email')) {
+        await _auth.currentUser!.verifyBeforeUpdateEmail(newUserData['email']);
+        _logger.info("User email updated in FirebaseAuth for UID: $uid");
+      }
+    } catch (error) {
+      _logger.severe("Error updating user data", error);
+      throw Exception("Error updating user data: $error");
+    }
+  }
+
+  Future<void> updatePassword(String newPassword) async {
+    try {
+      await _auth.currentUser!.updatePassword(newPassword);
+      _logger.info("Password updated successfully");
+    } catch (error) {
+      _logger.severe("Error updating password", error);
+      throw Exception("Error updating password: $error");
+    }
+  }
 }

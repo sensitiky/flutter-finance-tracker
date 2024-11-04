@@ -1,5 +1,5 @@
-import 'package:fundora/view/login.dart';
-import 'package:fundora/view/register.dart';
+import 'package:fundora/view/auth/login.dart';
+import 'package:fundora/view/auth/register.dart';
 import 'package:flutter/material.dart';
 
 class AuthScreen extends StatelessWidget {
