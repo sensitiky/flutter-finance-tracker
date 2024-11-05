@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fundora/view/dashboard/dashboard.dart';
+import 'package:fundora/src/view/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
 
 class SpendingTips extends StatelessWidget {

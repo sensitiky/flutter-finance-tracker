@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:fundora/modelview/userviewmodel.dart';
+import 'package:fundora/src/modelview/userviewmodel.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -136,9 +136,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                 Row(
                                   children: [
                                     IconButton(
-                                      onPressed: () {
-                                        print("press cam icon");
-                                      },
+                                      onPressed: () {},
                                       icon: Icon(Icons.camera),
                                       tooltip: "Edit profile picture",
                                     ),

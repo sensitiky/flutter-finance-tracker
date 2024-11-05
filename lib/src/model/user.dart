@@ -1,4 +1,4 @@
-import 'package:fundora/model/creditcard.dart';
+import 'package:fundora/src/model/creditcard.dart';
 
 class User {
   final String id;

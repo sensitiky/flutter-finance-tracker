@@ -1,26 +1,41 @@
-import 'package:fundora/modelview/userviewmodel.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import "package:fundora/src/modelview/userviewmodel.dart";
+import "package:flutter/material.dart";
+import "package:provider/provider.dart";
 
-class LoginForm extends StatefulWidget {
-  const LoginForm({super.key});
+class RegisterForm extends StatefulWidget {
+  const RegisterForm({super.key});
 
   @override
-  State<LoginForm> createState() => _LoginFormState();
+  State<RegisterForm> createState() => _RegisterFormState();
 }
 
-class _LoginFormState extends State<LoginForm> {
+class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
+  final usernameController = TextEditingController();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
   bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
   bool _isLoading = false;
 
   @override
   void dispose() {
+    usernameController.dispose();
     emailController.dispose();
     passwordController.dispose();
+    confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  String? _validateUsername(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter your username';
+    }
+    if (value.length < 3) {
+      return 'Username must be at least 3 characters';
+    }
+    return null;
   }
 
   String? _validateEmail(String? value) {
@@ -43,14 +58,25 @@ class _LoginFormState extends State<LoginForm> {
     return null;
   }
 
-  Future<void> _handleLogin() async {
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please confirm your password';
+    }
+    if (value != passwordController.text) {
+      return 'Passwords do not match';
+    }
+    return null;
+  }
+
+  Future<void> _handleRegister() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
     final userViewModel = Provider.of<UserViewModel>(context, listen: false);
 
     try {
-      final user = await userViewModel.loginUser(
+      final user = await userViewModel.registerUser(
+        usernameController.text,
         emailController.text,
         passwordController.text,
       );
@@ -60,7 +86,7 @@ class _LoginFormState extends State<LoginForm> {
       if (user != null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Logged in successfully'),
+            content: Text('Registered successfully'),
             backgroundColor: Colors.green,
           ),
         );
@@ -68,7 +94,7 @@ class _LoginFormState extends State<LoginForm> {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Invalid email or password'),
+            content: Text('Registration failed'),
             backgroundColor: Colors.red,
           ),
         );
@@ -92,6 +118,23 @@ class _LoginFormState extends State<LoginForm> {
         key: _formKey,
         child: Column(
           children: [
+            TextFormField(
+              controller: usernameController,
+              validator: _validateUsername,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                hintText: 'Enter your username',
+                prefixIcon: const Icon(Icons.person_outlined),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             TextFormField(
               controller: emailController,
               validator: _validateEmail,
@@ -137,12 +180,41 @@ class _LoginFormState extends State<LoginForm> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            TextFormField(
+              controller: confirmPasswordController,
+              validator: _validateConfirmPassword,
+              obscureText: _obscureConfirmPassword,
+              decoration: InputDecoration(
+                labelText: 'Confirm Password',
+                hintText: 'Confirm your password',
+                prefixIcon: const Icon(Icons.lock_outlined),
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscureConfirmPassword
+                        ? Icons.visibility_outlined
+                        : Icons.visibility_off_outlined,
+                  ),
+                  onPressed: () {
+                    setState(() =>
+                        _obscureConfirmPassword = !_obscureConfirmPassword);
+                  },
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(16),
+                  borderSide: BorderSide(color: Colors.grey.shade300),
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
               height: 50,
               child: ElevatedButton(
-                onPressed: _isLoading ? null : _handleLogin,
+                onPressed: _isLoading ? null : _handleRegister,
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
@@ -151,7 +223,7 @@ class _LoginFormState extends State<LoginForm> {
                 child: _isLoading
                     ? const CircularProgressIndicator()
                     : const Text(
-                        'Login',
+                        'Register',
                         style: TextStyle(fontSize: 16),
                       ),
               ),

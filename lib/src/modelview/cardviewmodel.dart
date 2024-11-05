@@ -1,4 +1,4 @@
-import 'package:fundora/model/creditcard.dart';
+import 'package:fundora/src/model/creditcard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../services/cardservices.dart';

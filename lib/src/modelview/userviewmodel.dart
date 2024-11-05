@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fundora/model/user.dart';
-import 'package:fundora/services/userservices.dart';
+import 'package:fundora/src/model/user.dart';
+import 'package:fundora/src/services/userservices.dart';
 import 'package:logging/logging.dart';
 
 class UserViewModel extends ChangeNotifier {
