@@ -22,7 +22,7 @@ Flutter Finance is a cross-platform mobile application built with Flutter that h
 
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/sensitiky/flutter-finance-tracker
    ```
 2. Navigate to the project directory:
    ```bash
