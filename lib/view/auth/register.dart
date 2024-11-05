@@ -76,6 +76,7 @@ class _RegisterFormState extends State<RegisterForm> {
 
     try {
       final user = await userViewModel.registerUser(
+        usernameController.text,
         emailController.text,
         passwordController.text,
       );

@@ -1,4 +1,4 @@
-import 'package:fundora/components/card.dart';
+import 'package:fundora/common/card.dart';
 import 'package:fundora/modelview/themeviewmodel.dart';
 import 'package:fundora/modelview/userviewmodel.dart';
 import 'package:fundora/modelview/cardviewmodel.dart';
@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
+  bool showCardNumber = false;
   final cardNumberController = TextEditingController();
   final expiryDateController = TextEditingController();
   final cardHolderController = TextEditingController();
@@ -24,12 +25,27 @@ class HomeScreenState extends State<HomeScreen> {
   int? editIndex;
 
   @override
+  void initState() {
+    fetchUserCreditCard();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     cardNumberController.dispose();
     expiryDateController.dispose();
     cardHolderController.dispose();
     cvvController.dispose();
     super.dispose();
+  }
+
+  void fetchUserCreditCard() {
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final cardViewModel =
+          Provider.of<CreditCardViewModel>(context, listen: false);
+      cardViewModel.getUserCard(uid);
+    }
   }
 
   void clearControllers() {
@@ -46,7 +62,13 @@ class HomeScreenState extends State<HomeScreen> {
       );
       return;
     }
-
+    final expiryDatePattern = RegExp(r'^\d{2}/\d{2}');
+    if (!expiryDatePattern.hasMatch(expiryDateController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Expiry date format must be XX/XX")),
+      );
+      return;
+    }
     try {
       final cardViewModel =
           Provider.of<CreditCardViewModel>(context, listen: false);
@@ -222,6 +244,75 @@ class HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  Future<void> deleteCard(BuildContext context, int index) async {
+    final cardViewModel =
+        Provider.of<CreditCardViewModel>(context, listen: false);
+    if (cardViewModel.cardModel.isNotEmpty) {
+      if (index >= 0 && index < cardViewModel.cardModel.length) {
+        bool isConfirmed = await showDialog<bool>(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Delete Credit Card'),
+                  content:
+                      const Text('Are you sure you want to delete this card?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(context).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(context).pop(true),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                );
+              },
+            ) ??
+            false;
+
+        if (isConfirmed) {
+          String uid = FirebaseAuth.instance.currentUser!.uid;
+          try {
+            bool success = await cardViewModel.deleteCreditCard(
+              uid: uid,
+              index: index,
+            );
+
+            if (success) {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Card deleted successfully.")),
+                );
+                setState(() {});
+              }
+            } else {
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Failed to delete card.")),
+                );
+              }
+            }
+          } catch (error) {
+            if (context.mounted) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Error deleting card: $error")),
+              );
+            }
+          }
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Invalid card index.")),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("No credit cards to delete.")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer2<UserViewModel, Themeviewmodel>(
@@ -274,16 +365,31 @@ class HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Text(
-                        '\$12,846.00',
-                        style: TextStyle(
-                          color: themeViewModel.isDarkMode
-                              ? Colors.white
-                              : Colors.black,
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            showCardNumber ? "\$15.000" : "\$ **** ",
+                            style: TextStyle(
+                              color: themeViewModel.isDarkMode
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              setState(
+                                () {
+                                  showCardNumber = !showCardNumber;
+                                },
+                              );
+                            },
+                            child: Icon(Icons.remove_red_eye_outlined),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -318,6 +424,21 @@ class HomeScreenState extends State<HomeScreen> {
                               await addCard(context);
                             },
                             icon: const Icon(Icons.add),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(right: 10),
+                      child: Row(
+                        children: [
+                          const Text("Delete"),
+                          IconButton(
+                            onPressed: () async {
+                              int index = 0;
+                              await deleteCard(context, index);
+                            },
+                            icon: const Icon(Icons.delete),
                           ),
                         ],
                       ),

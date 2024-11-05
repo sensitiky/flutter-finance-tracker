@@ -88,4 +88,20 @@ class CreditCardViewModel extends ChangeNotifier {
       throw Exception("Unable to update user card $error");
     }
   }
+
+  Future<bool> deleteCreditCard({required uid, required index}) async {
+    try {
+      if (index < 0 || index > _cardModels.length) {
+        throw Exception("Invalid card index");
+      }
+      var isCardDeleted = await _cardServices.removeCreditCard(uid, index);
+      if (isCardDeleted) {
+        notifyListeners();
+        return true;
+      }
+      return false;
+    } catch (error) {
+      throw Exception("Unable to delete user card $error");
+    }
+  }
 }

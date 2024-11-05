@@ -115,6 +115,40 @@ class ProfileScreenState extends State<ProfileScreen> {
                     key: _formKey,
                     child: Column(
                       children: [
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              height: 80,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue.shade100,
+                                image: const DecorationImage(
+                                    image: NetworkImage(
+                                        'https://i.pravatar.cc/300'),
+                                    fit: BoxFit.cover),
+                              ),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        print("press cam icon");
+                                      },
+                                      icon: Icon(Icons.camera),
+                                      tooltip: "Edit profile picture",
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                        SizedBox(height: 20),
                         _buildTextField(
                           controller: nameController,
                           label: "Name",

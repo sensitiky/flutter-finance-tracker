@@ -261,7 +261,11 @@ class SettingsScreen extends StatelessWidget {
                       titleColor: themeViewModel.isDarkMode
                           ? Colors.white
                           : Colors.grey[700],
-                      onTap: () {},
+                      onTap: () {
+                        if (context.mounted) {
+                          Navigator.pushNamed(context, "/Privacy");
+                        }
+                      },
                     ),
                     _buildSettingsItem(
                       icon: Icons.logout,
@@ -271,14 +275,17 @@ class SettingsScreen extends StatelessWidget {
                         bool? shouldLogout =
                             await showLogoutBottomSheet(context);
                         if (shouldLogout == true) {
-                          await userViewModel.logout();
                           if (context.mounted) {
                             Navigator.pushNamedAndRemoveUntil(
                               context,
-                              "/Login",
+                              "/Welcome",
                               (route) => false,
                             );
                           }
+                          WidgetsBinding.instance
+                              .addPostFrameCallback((_) async {
+                            await userViewModel.logout();
+                          });
                         }
                       },
                     ),

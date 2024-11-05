@@ -41,7 +41,6 @@ class Userservices {
         email: email,
         password: password,
       );
-      _logger.info("User registered with UID: ${userCredential.user!.uid}");
       return userCredential.user;
     } on FirebaseAuthException catch (e) {
       String errorMessage = "Registration failed";

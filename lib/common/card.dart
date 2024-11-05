@@ -1,6 +1,5 @@
 import 'package:fundora/model/creditcard.dart';
 import 'package:fundora/modelview/cardviewmodel.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import "dart:math" as math;
@@ -14,10 +13,6 @@ class CardComponent extends StatefulWidget {
 
 class _CardComponentState extends State<CardComponent> {
   bool showCardNumber = false;
-  final _cardNumberController = TextEditingController();
-  final _expiryDateController = TextEditingController();
-  final _cardHolderController = TextEditingController();
-  final _cvvController = TextEditingController();
   final PageController _pageController = PageController();
   final List<Color> cardColors = [
     Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
@@ -26,119 +21,6 @@ class _CardComponentState extends State<CardComponent> {
     Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
     Color((math.Random().nextDouble() * 0xFFFFFF).toInt()).withOpacity(1.0),
   ];
-  @override
-  void initState() {
-    super.initState();
-    final cardViewModel =
-        Provider.of<CreditCardViewModel>(context, listen: false);
-    final uid = FirebaseAuth.instance.currentUser?.uid ?? '';
-    if (uid.isNotEmpty) {
-      cardViewModel.getUserCard(uid);
-    }
-  }
-
-  @override
-  void dispose() {
-    _cardNumberController.dispose();
-    _expiryDateController.dispose();
-    _cardHolderController.dispose();
-    _cvvController.dispose();
-    _pageController.dispose();
-    super.dispose();
-  }
-
-  Future<void> editCard(
-      BuildContext context, int index, CreditCard card) async {
-    _cardNumberController.text = card.cardNumber ?? "";
-    _expiryDateController.text = card.expiryDate ?? "";
-    _cardHolderController.text = card.cardHolder ?? "";
-    _cvvController.text = card.cvv ?? "";
-
-    if (_cvvController.text.length != 3) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("CVV must be 3 digits")),
-      );
-      return;
-    }
-
-    try {
-      final cardViewModel =
-          Provider.of<CreditCardViewModel>(context, listen: false);
-      bool success = await cardViewModel.saveCreditCard(
-        uid: FirebaseAuth.instance.currentUser!.uid,
-        cardNumber: _cardNumberController.text,
-        expiryDate: _expiryDateController.text,
-        cardHolder: _cardHolderController.text,
-        cvv: _cvvController.text,
-      );
-      if (success) {
-        if (context.mounted) Navigator.of(context).pop();
-      } else {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Failed to save card")),
-          );
-        }
-      }
-    } catch (error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Error saving card: $error")),
-        );
-      }
-    }
-  }
-
-  void showEditCardDialog(BuildContext context, int index, CreditCard card) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Edit Credit Card'),
-          content: SingleChildScrollView(
-            child: Column(
-              children: [
-                TextField(
-                  controller: _cardNumberController,
-                  decoration: const InputDecoration(labelText: "Card Number"),
-                  keyboardType: TextInputType.number,
-                ),
-                TextField(
-                  controller: _expiryDateController,
-                  decoration: const InputDecoration(labelText: "Expiry Date"),
-                  keyboardType: TextInputType.datetime,
-                ),
-                TextField(
-                  controller: _cardHolderController,
-                  decoration: const InputDecoration(labelText: "Card Holder"),
-                ),
-                TextField(
-                  controller: _cvvController,
-                  decoration: const InputDecoration(labelText: "CVV"),
-                  keyboardType: TextInputType.number,
-                  obscureText: true,
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text("Cancel"),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                await editCard(context, index, card);
-              },
-              child: const Text("Save"),
-            ),
-          ],
-        );
-      },
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,11 +55,6 @@ class _CardComponentState extends State<CardComponent> {
                   );
                 },
                 child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      showCardNumber = !showCardNumber;
-                    });
-                  },
                   child: Container(
                     margin: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 20),
@@ -227,16 +104,43 @@ class _CardComponentState extends State<CardComponent> {
           ],
         ),
         const Spacer(),
-        // Card Number
-        Text(
-          showCardNumber
-              ? card.cardNumber ?? "**** **** **** 1234"
-              : '**** **** ****',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            letterSpacing: 2,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              showCardNumber
+                  ? card.cardNumber ?? "**** **** **** 1234"
+                  : '**** **** ****',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                letterSpacing: 2,
+              ),
+            ),
+            ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                  (Set<WidgetState> states) {
+                    if (!showCardNumber) {
+                      return Colors.white10;
+                    }
+                    if (states.contains(WidgetState.pressed)) {
+                      return Colors.black12;
+                    }
+                    return Colors.black12;
+                  },
+                ),
+              ),
+              onPressed: () {
+                setState(
+                  () {
+                    showCardNumber = !showCardNumber;
+                  },
+                );
+              },
+              child: Icon(Icons.remove_red_eye_outlined),
+            ),
+          ],
         ),
         const SizedBox(height: 20),
         // Card Details

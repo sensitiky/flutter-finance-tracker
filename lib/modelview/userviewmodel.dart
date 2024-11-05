@@ -40,7 +40,7 @@ class UserViewModel extends ChangeNotifier {
     }
   }
 
-  Future<User?> registerUser(String email, String password) async {
+  Future<User?> registerUser(String name, String email, String password) async {
     _isLoading = true;
     notifyListeners();
 
@@ -51,7 +51,7 @@ class UserViewModel extends ChangeNotifier {
         _userModel = User(
           id: firebaseUser.uid,
           email: firebaseUser.email,
-          name: email.split('@')[0],
+          name: name,
         );
         await _userService.saveUserData(firebaseUser.uid, _userModel!.toJson());
         _logger.info("User registered: ${_userModel!.toJson()}");
