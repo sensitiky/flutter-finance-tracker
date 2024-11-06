@@ -212,7 +212,7 @@ class SettingsScreen extends StatelessWidget {
                           ? Colors.white
                           : Colors.grey[700],
                       trailing: Switch(
-                        value: true,
+                        value: false,
                         onChanged: (value) {},
                       ),
                     ),
@@ -253,7 +253,11 @@ class SettingsScreen extends StatelessWidget {
                       titleColor: themeViewModel.isDarkMode
                           ? Colors.white
                           : Colors.grey[700],
-                      onTap: () {},
+                      onTap: () {
+                        if (context.mounted) {
+                          Navigator.pushNamed(context, "/Faq");
+                        }
+                      },
                     ),
                     _buildSettingsItem(
                       icon: Icons.policy_outlined,

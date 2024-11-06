@@ -8,6 +8,7 @@ import 'package:fundora/services/userservices.dart';
 import 'package:fundora/view/dashboard/dashboard.dart';
 import 'package:fundora/view/auth/login.dart';
 import 'package:fundora/view/auth/register.dart';
+import 'package:fundora/view/settings/faq.dart';
 import 'package:fundora/view/settings/privacypolicy.dart';
 import 'package:fundora/view/settings/profile.dart';
 import 'package:fundora/view/settings/settings.dart';
@@ -52,9 +53,7 @@ class MainApp extends StatelessWidget {
             darkTheme: ThemeData(
               useMaterial3: true,
               colorScheme: ColorScheme.fromSeed(
-                seedColor: Colors.purple,
-                brightness: Brightness.dark,
-              ),
+                  seedColor: Colors.purple, brightness: Brightness.dark),
             ),
             themeMode:
                 themeViewModel.isDarkMode ? ThemeMode.dark : ThemeMode.light,
@@ -66,7 +65,8 @@ class MainApp extends StatelessWidget {
               "/Register": (context) => const RegisterForm(),
               "/Settings": (context) => SettingsScreen(),
               "/Profile": (context) => ProfileScreen(),
-              "/Privacy": (context) => PrivacypolicyScreen()
+              "/Privacy": (context) => PrivacypolicyScreen(),
+              "/Faq": (context) => const FAQ()
             },
           );
         },

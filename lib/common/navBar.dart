@@ -29,9 +29,7 @@ class HomeNavBarState extends State<HomeNavBar> {
   @override
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
-      HomeScreen(
-        goToSettings: _goToSettings,
-      ),
+      HomeScreen(goToSettings: _goToSettings),
       const DashboardScreen(),
       SettingsScreen(),
     ];
@@ -57,6 +55,8 @@ class HomeNavBarState extends State<HomeNavBar> {
             currentIndex: _selectedIndex,
             selectedItemColor:
                 themeViewModel.isDarkMode ? Colors.blue[700] : Colors.blue[700],
+            backgroundColor:
+                themeViewModel.isDarkMode ? Colors.white12 : Colors.white,
             onTap: _onItemTapped,
           ),
         );
