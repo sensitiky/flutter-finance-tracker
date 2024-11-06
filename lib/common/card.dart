@@ -1,5 +1,5 @@
-import 'package:fundora/src/model/creditcard.dart';
-import 'package:fundora/src/modelview/cardviewmodel.dart';
+import 'package:fundora/model/creditcard.dart';
+import 'package:fundora/modelview/cardviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import "dart:math" as math;

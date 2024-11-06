@@ -1,5 +1,5 @@
-import 'package:fundora/src/modelview/themeviewmodel.dart';
-import 'package:fundora/src/modelview/userviewmodel.dart';
+import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/modelview/userviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

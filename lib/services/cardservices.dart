@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fundora/src/model/creditcard.dart';
+import 'package:fundora/model/creditcard.dart';
 
 class CardServices {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;

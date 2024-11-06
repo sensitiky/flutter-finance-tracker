@@ -1,9 +1,9 @@
-import 'package:fundora/src/common/card.dart';
+import 'package:fundora/common/card.dart';
 import 'package:flutter/material.dart';
-import 'package:fundora/src/model/expenseCategory.dart';
-import 'package:fundora/src/modelview/themeviewmodel.dart';
+import 'package:fundora/model/expenseCategory.dart';
+import 'package:fundora/modelview/themeviewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:fundora/src/modelview/userviewmodel.dart';
+import 'package:fundora/modelview/userviewmodel.dart';
 import 'components/spendingTips.dart';
 import 'components/spendingTrends.dart';
 import 'components/expenseOverview.dart';

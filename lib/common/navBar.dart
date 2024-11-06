@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:fundora/src/modelview/themeviewmodel.dart';
-import 'package:fundora/src/view/dashboard/dashboard.dart';
-import 'package:fundora/src/view/home/home.dart';
-import 'package:fundora/src/view/settings/settings.dart';
+import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/view/dashboard/dashboard.dart';
+import 'package:fundora/view/home/home.dart';
+import 'package:fundora/view/settings/settings.dart';
 import 'package:provider/provider.dart';
 
 class HomeNavBar extends StatefulWidget {

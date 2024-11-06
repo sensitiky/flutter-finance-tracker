@@ -1,8 +1,8 @@
-import 'package:fundora/src/common/card.dart';
-import 'package:fundora/src/modelview/themeviewmodel.dart';
-import 'package:fundora/src/modelview/userviewmodel.dart';
-import 'package:fundora/src/modelview/cardviewmodel.dart';
-import 'package:fundora/src/model/creditcard.dart';
+import 'package:fundora/common/card.dart';
+import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/modelview/userviewmodel.dart';
+import 'package:fundora/modelview/cardviewmodel.dart';
+import 'package:fundora/model/creditcard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -284,7 +284,9 @@ class HomeScreenState extends State<HomeScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text("Card deleted successfully.")),
                 );
-                setState(() {});
+                setState(() {
+                  fetchUserCreditCard();
+                });
               }
             } else {
               if (context.mounted) {

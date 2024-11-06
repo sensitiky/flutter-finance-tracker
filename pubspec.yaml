@@ -25,7 +25,7 @@ dev_dependencies:
 
 flutter_native_splash:
   color: "#ffffff"
-  image: assets/img/fundora.png
+  image: "assets/img/fundora.png"
 
 flutter:
   uses-material-design: true
