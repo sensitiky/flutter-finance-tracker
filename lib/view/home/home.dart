@@ -1,7 +1,7 @@
 import 'package:fundora/common/card.dart';
-import 'package:fundora/modelview/themeviewmodel.dart';
-import 'package:fundora/modelview/userviewmodel.dart';
-import 'package:fundora/modelview/cardviewmodel.dart';
+import 'package:fundora/viewmodels/themeviewmodel.dart';
+import 'package:fundora/viewmodels/userviewmodel.dart';
+import 'package:fundora/viewmodels/cardviewmodel.dart';
 import 'package:fundora/model/creditcard.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,12 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    fetchUserCreditCard();
+    final uid = FirebaseAuth.instance.currentUser?.uid;
+    if (uid != null) {
+      final cardViewModel =
+          Provider.of<CreditCardViewModel>(context, listen: false);
+      cardViewModel.getUserCard(uid);
+    }
     super.initState();
   }
 
@@ -39,15 +44,6 @@ class HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void fetchUserCreditCard() {
-    final uid = FirebaseAuth.instance.currentUser?.uid;
-    if (uid != null) {
-      final cardViewModel =
-          Provider.of<CreditCardViewModel>(context, listen: false);
-      cardViewModel.getUserCard(uid);
-    }
-  }
-
   void clearControllers() {
     cardNumberController.clear();
     expiryDateController.clear();
@@ -58,14 +54,20 @@ class HomeScreenState extends State<HomeScreen> {
   Future<void> saveCard(BuildContext context) async {
     if (cvvController.text.length != 3) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("CVV must be 3 digits")),
+        const SnackBar(
+          content: Text("CVV must be 3 digits"),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       return;
     }
     final expiryDatePattern = RegExp(r'^\d{2}/\d{2}');
     if (!expiryDatePattern.hasMatch(expiryDateController.text)) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Expiry date format must be XX/XX")),
+        const SnackBar(
+          content: Text("Expiry date format must be XX/XX"),
+          behavior: SnackBarBehavior.floating,
+        ),
       );
       return;
     }
@@ -285,7 +287,7 @@ class HomeScreenState extends State<HomeScreen> {
                   const SnackBar(content: Text("Card deleted successfully.")),
                 );
                 setState(() {
-                  fetchUserCreditCard();
+                  cardViewModel.getUserCard(uid);
                 });
               }
             } else {
@@ -395,7 +397,6 @@ class HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
-                // Credit Card
                 const CardComponent(),
                 const SizedBox(height: 20),
                 Row(

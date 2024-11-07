@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/viewmodels/themeviewmodel.dart';
 import 'package:fundora/view/dashboard/dashboard.dart';
 import 'package:provider/provider.dart';
 

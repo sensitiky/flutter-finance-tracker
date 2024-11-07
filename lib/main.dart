@@ -1,8 +1,8 @@
 import 'package:fundora/common/navBar.dart';
 import 'package:fundora/firebase_options.dart';
-import 'package:fundora/modelview/cardviewmodel.dart';
-import 'package:fundora/modelview/themeviewmodel.dart';
-import 'package:fundora/modelview/userviewmodel.dart';
+import 'package:fundora/viewmodels/cardviewmodel.dart';
+import 'package:fundora/viewmodels/themeviewmodel.dart';
+import 'package:fundora/viewmodels/userviewmodel.dart';
 import 'package:fundora/services/cardservices.dart';
 import 'package:fundora/services/userservices.dart';
 import 'package:fundora/view/dashboard/dashboard.dart';

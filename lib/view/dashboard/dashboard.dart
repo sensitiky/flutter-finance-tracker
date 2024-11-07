@@ -1,9 +1,9 @@
 import 'package:fundora/common/card.dart';
 import 'package:flutter/material.dart';
 import 'package:fundora/model/expenseCategory.dart';
-import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/viewmodels/themeviewmodel.dart';
 import 'package:provider/provider.dart';
-import 'package:fundora/modelview/userviewmodel.dart';
+import 'package:fundora/viewmodels/userviewmodel.dart';
 import 'components/spendingTips.dart';
 import 'components/spendingTrends.dart';
 import 'components/expenseOverview.dart';
@@ -61,11 +61,13 @@ class DashboardContent extends StatelessWidget {
 class DataAnalyzer with ChangeNotifier {
   double mainIncome = 5000.0; // MOCKUP income
   List<ExpenseCategory> expenses = [
-    ExpenseCategory(title: 'Housing', amount: 1750.0, color: Colors.blue),
-    ExpenseCategory(title: 'Food', amount: 1250.0, color: Colors.green),
-    ExpenseCategory(title: 'Transport', amount: 1000.0, color: Colors.orange),
     ExpenseCategory(
-        title: 'Entertainment', amount: 500.0, color: Colors.purple),
+        title: 'Housing', amount: 1750.0, color: Colors.blue, id: 1),
+    ExpenseCategory(title: 'Food', amount: 1250.0, color: Colors.green, id: 2),
+    ExpenseCategory(
+        title: 'Transport', amount: 1000.0, color: Colors.orange, id: 3),
+    ExpenseCategory(
+        title: 'Entertainment', amount: 500.0, color: Colors.purple, id: 4)
   ];
 
   double predictedIncome = 0.0;

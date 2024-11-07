@@ -1,4 +1,4 @@
-import 'package:fundora/modelview/userviewmodel.dart';
+import 'package:fundora/viewmodels/userviewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -62,6 +62,7 @@ class _LoginFormState extends State<LoginForm> {
           const SnackBar(
             content: Text('Logged in successfully'),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
           ),
         );
         Navigator.pushReplacementNamed(context, '/Home');
@@ -70,6 +71,7 @@ class _LoginFormState extends State<LoginForm> {
           const SnackBar(
             content: Text('Invalid email or password'),
             backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
           ),
         );
       }

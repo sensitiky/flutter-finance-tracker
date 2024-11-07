@@ -1,4 +1,4 @@
-import 'package:fundora/modelview/themeviewmodel.dart';
+import 'package:fundora/viewmodels/themeviewmodel.dart';
 import 'package:fundora/view/auth/login.dart';
 import 'package:fundora/view/auth/register.dart';
 import 'package:flutter/material.dart';

@@ -1,4 +1,4 @@
-import "package:fundora/modelview/userviewmodel.dart";
+import "package:fundora/viewmodels/userviewmodel.dart";
 import "package:flutter/material.dart";
 import "package:provider/provider.dart";
 
@@ -88,6 +88,7 @@ class _RegisterFormState extends State<RegisterForm> {
           const SnackBar(
             content: Text('Registered successfully'),
             backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
           ),
         );
         Navigator.pushReplacementNamed(context, '/Home');
@@ -96,6 +97,7 @@ class _RegisterFormState extends State<RegisterForm> {
           const SnackBar(
             content: Text('Registration failed'),
             backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
           ),
         );
       }
@@ -104,6 +106,7 @@ class _RegisterFormState extends State<RegisterForm> {
         SnackBar(
           content: Text('Error: ${e.toString()}'),
           backgroundColor: Colors.red,
+          behavior: SnackBarBehavior.floating,
         ),
       );
     } finally {
