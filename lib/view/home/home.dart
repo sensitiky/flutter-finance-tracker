@@ -26,13 +26,14 @@ class HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    super.initState();
+
     final uid = FirebaseAuth.instance.currentUser?.uid;
     if (uid != null) {
       final cardViewModel =
           Provider.of<CreditCardViewModel>(context, listen: false);
       cardViewModel.getUserCard(uid);
     }
-    super.initState();
   }
 
   @override

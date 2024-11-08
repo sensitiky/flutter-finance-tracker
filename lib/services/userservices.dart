@@ -4,10 +4,15 @@ import 'package:logging/logging.dart';
 
 //TODO agregar storage de firebase para almacenar avatares del usuario
 class Userservices {
+  static final Userservices _instance = Userservices._internal();
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final Logger _logger = Logger("Userservices");
 
+  Userservices._internal();
+  factory Userservices() {
+    return _instance;
+  }
   User? getCurrentUser() {
     try {
       final user = _auth.currentUser;

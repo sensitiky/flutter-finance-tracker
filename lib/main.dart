@@ -1,5 +1,7 @@
 import 'package:fundora/common/navBar.dart';
 import 'package:fundora/firebase_options.dart';
+import 'package:fundora/domain/api/firebaseAPI.dart';
+import 'package:fundora/view/settings/paymethods.dart';
 import 'package:fundora/viewmodels/cardviewmodel.dart';
 import 'package:fundora/viewmodels/themeviewmodel.dart';
 import 'package:fundora/viewmodels/userviewmodel.dart';
@@ -20,6 +22,7 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  await FirebaseApi().initNotifications();
   runApp(const MainApp());
 }
 
@@ -66,7 +69,8 @@ class MainApp extends StatelessWidget {
               "/Settings": (context) => SettingsScreen(),
               "/Profile": (context) => ProfileScreen(),
               "/Privacy": (context) => PrivacypolicyScreen(),
-              "/Faq": (context) => const FAQ()
+              "/Faq": (context) => const FAQ(),
+              "/PayMethods": (context) => PaymentMethods()
             },
           );
         },

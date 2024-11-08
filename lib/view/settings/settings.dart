@@ -197,7 +197,11 @@ class SettingsScreen extends StatelessWidget {
                       titleColor: themeViewModel.isDarkMode
                           ? Colors.white
                           : Colors.grey[700],
-                      onTap: () {},
+                      onTap: () {
+                        if (context.mounted) {
+                          Navigator.pushNamed(context, "/PayMethods");
+                        }
+                      },
                     ),
                   ],
                 ),

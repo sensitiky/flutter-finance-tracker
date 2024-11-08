@@ -32,8 +32,8 @@ class UserViewModel extends ChangeNotifier {
           _logger.info("Current user loaded: ${_userModel?.email}");
         }
       }
-    } catch (e) {
-      _logger.severe("Error checking current user: $e");
+    } catch (error) {
+      _logger.severe("Error checking current user: $error");
     } finally {
       _isLoading = false;
       notifyListeners();
