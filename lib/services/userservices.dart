@@ -2,7 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:logging/logging.dart';
 
-//TODO agregar storage de firebase para almacenar avatares del usuario
+///TODO agregar storage de firebase para almacenar avatares del usuario
+///Solo dios sabe como hice esto un singleton y porque funciona
 class Userservices {
   static final Userservices _instance = Userservices._internal();
   final FirebaseAuth _auth = FirebaseAuth.instance;

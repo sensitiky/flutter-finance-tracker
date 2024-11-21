@@ -1,3 +1,4 @@
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:fundora/common/navBar.dart';
 import 'package:fundora/firebase_options.dart';
 import 'package:fundora/domain/api/firebaseAPI.dart';
@@ -42,6 +43,9 @@ class MainApp extends StatelessWidget {
       child: Consumer<Themeviewmodel>(
         builder: (context, themeViewModel, child) {
           return MaterialApp(
+            navigatorObservers: [
+              FirebaseAnalyticsObserver(analytics: FirebaseAnalytics.instance)
+            ],
             debugShowCheckedModeBanner: false,
             initialRoute: "/Welcome",
             home: const HomeNavBar(),

@@ -7,6 +7,7 @@ class FirebaseApi {
     await _firebaseMessaging.requestPermission();
     final fCMToken = await _firebaseMessaging.getToken();
     if (fCMToken!.isNotEmpty) {
+      print("Token: $fCMToken");
       return true;
     } else {
       return false;

@@ -168,27 +168,6 @@ class ProfileScreenState extends State<ProfileScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 16),
-                        _buildTextField(
-                          controller: passwordController,
-                          label: "New Password",
-                          icon: Icons.lock,
-                          obscureText: true,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildTextField(
-                          controller: confirmPasswordController,
-                          label: "Confirm New Password",
-                          icon: Icons.lock_outline,
-                          obscureText: true,
-                          validator: (value) {
-                            if (passwordController.text.isNotEmpty &&
-                                value != passwordController.text) {
-                              return 'Passwords do not match';
-                            }
-                            return null;
-                          },
-                        ),
                         const SizedBox(height: 32),
                         ElevatedButton(
                           onPressed: updateProfile,
